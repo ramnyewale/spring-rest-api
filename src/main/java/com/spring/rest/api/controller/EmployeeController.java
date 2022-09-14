@@ -34,11 +34,13 @@ public class EmployeeController {
 	private String appVersion;
 
 	@Autowired
-	private EmployeeService employeeService;	
-	
+	private EmployeeService employeeService;
+
 	@GetMapping("/employees")
-	public List<Employee> gelAllEmployees() {
-		return employeeService.getEmployees();
+	public ResponseEntity<List<Employee>> gelAllEmployees(@RequestParam final int pageNo,
+			@RequestParam final int pageSize) {
+		List<Employee> employee = employeeService.getEmployees(pageNo, pageSize);
+		return new ResponseEntity<>(employee, HttpStatus.OK);
 	}
 
 	@GetMapping("/employees/{id}")
@@ -62,7 +64,7 @@ public class EmployeeController {
 		employee.setId(id);
 		return employeeService.updateEmployee(employee);
 	}
-	
+
 	@PatchMapping("/employees-patch/{id}")
 	public ResponseEntity<Employee> updateEmployeeWithPatch(@PathVariable final Long id,
 			@RequestBody Employee employee) {
@@ -83,10 +85,23 @@ public class EmployeeController {
 		List<Employee> resultList = employeeService.findByNameAndLocation(name, location);
 		return new ResponseEntity<>(resultList, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/employees/filterByNameContaining")
-	public ResponseEntity<List<Employee>> getEmployeeByNameContaining(@RequestParam final String name){
+	public ResponseEntity<List<Employee>> getEmployeeByNameContaining(@RequestParam final String name) {
 		List<Employee> employee = employeeService.findByNameContains(name);
-		return new ResponseEntity<>(employee,HttpStatus.OK);
+		return new ResponseEntity<>(employee, HttpStatus.OK);
+	}
+
+	@GetMapping("/employees/filterByNameOrLocation/jpql/{name}/{location}")
+	public ResponseEntity<List<Employee>> getEmpByNameOrLocation(@PathVariable("name") final String name,
+			@PathVariable("location") final String location) {
+		List<Employee> emp = employeeService.getEmpByNameOrLocation(name, location);
+		return new ResponseEntity<>(emp, HttpStatus.OK);
+	}
+
+	@DeleteMapping("/employees/delete/{id}")
+	public ResponseEntity<Integer> deleteEmpById(@PathVariable("id") final Long id) {
+		Integer emp = employeeService.deleteEmployeeById(id);
+		return new ResponseEntity<>(emp, HttpStatus.OK);
 	}
 }

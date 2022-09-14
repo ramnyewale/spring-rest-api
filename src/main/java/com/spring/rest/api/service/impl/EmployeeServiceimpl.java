@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.spring.rest.api.model.Employee;
 import com.spring.rest.api.repository.EmployeeRepository;
 import com.spring.rest.api.service.EmployeeService;
@@ -19,8 +19,9 @@ public class EmployeeServiceimpl implements EmployeeService {
 	private EmployeeRepository employeeRepository;
 
 	@Override
-	public List<Employee> getEmployees() {
-		return employeeRepository.findAll();
+	public List<Employee> getEmployees(final int pageNo, final int pageSize) {
+		Pageable page = PageRequest.of(pageNo, pageSize);
+		return employeeRepository.findAll(page).getContent();
 	}
 
 	@Override
@@ -50,7 +51,8 @@ public class EmployeeServiceimpl implements EmployeeService {
 
 	@Override
 	public List<Employee> findByName(String name) {
-		return employeeRepository.findByName(name);
+		Sort sort = Sort.by(Sort.Direction.DESC, "id");
+		return employeeRepository.findByName(name, sort);
 	}
 
 	@Override
@@ -61,5 +63,15 @@ public class EmployeeServiceimpl implements EmployeeService {
 	@Override
 	public List<Employee> findByNameContains(String name) {
 		return employeeRepository.findByNameContains(name);
+	}
+
+	@Override
+	public List<Employee> getEmpByNameOrLocation(String name, String location) {
+		return employeeRepository.getEmpByNameOrLocation(name, location);
+	}
+
+	@Override
+	public Integer deleteEmployeeById(Long id) {
+		return employeeRepository.deleteEmployeeById(id);
 	}
 }
