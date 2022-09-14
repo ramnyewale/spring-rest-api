@@ -1,5 +1,6 @@
 package com.spring.rest.api.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,6 +8,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -39,7 +42,7 @@ public class EmployeeController {
 	}
 
 	@GetMapping("/employees/{id}")
-	public Optional<Employee> getEmployee(@PathVariable("id") final Long id) {		
+	public Optional<Employee> getEmployee(@PathVariable("id") final Long id) {
 		return employeeService.getEmployee(id);
 	}
 
@@ -61,9 +64,29 @@ public class EmployeeController {
 	}
 	
 	@PatchMapping("/employees-patch/{id}")
-	public Employee updateEmployeeWithPatch(@PathVariable final Long id, @RequestBody Employee employee) {
+	public ResponseEntity<Employee> updateEmployeeWithPatch(@PathVariable final Long id,
+			@RequestBody Employee employee) {
 		employee.setId(id);
-		return employeeService.updateEmployee(employee);
+		Employee emp = employeeService.updateEmployee(employee);
+		return new ResponseEntity<>(emp, HttpStatus.OK);
 	}
 
+	@GetMapping("/employees/filterByName")
+	public ResponseEntity<List<Employee>> getEmployeeByName(@RequestParam final String name) {
+		List<Employee> resultList = employeeService.findByName(name);
+		return new ResponseEntity<>(resultList, HttpStatus.OK);
+	}
+
+	@GetMapping("/employees/filterByNameAndLocation")
+	public ResponseEntity<List<Employee>> findByNameAndLocation(@RequestParam final String name,
+			@RequestParam final String location) {
+		List<Employee> resultList = employeeService.findByNameAndLocation(name, location);
+		return new ResponseEntity<>(resultList, HttpStatus.OK);
+	}
+	
+	@GetMapping("/employees/filterByNameContaining")
+	public ResponseEntity<List<Employee>> getEmployeeByNameContaining(@RequestParam final String name){
+		List<Employee> employee = employeeService.findByNameContains(name);
+		return new ResponseEntity<>(employee,HttpStatus.OK);
+	}
 }

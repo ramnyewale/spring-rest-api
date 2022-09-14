@@ -16,5 +16,11 @@ public interface EmployeeService {
 	public Employee updateEmployee(final Employee employee);
 	
 	public void deleteEmployee(final Long id);
+	
+	public List<Employee> findByName(final String name);
+	
+	public List<Employee> findByNameAndLocation(final String name, final String location);
+	
+	public List<Employee> findByNameContains(final String name);
 
 }
