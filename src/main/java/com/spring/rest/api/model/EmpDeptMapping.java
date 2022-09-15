@@ -10,6 +10,21 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.spring.rest.api.dao.EmployeeDAO;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@Data
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "tbl_emp_dept_mapping")
 public class EmpDeptMapping implements Serializable {
@@ -26,5 +41,39 @@ public class EmpDeptMapping implements Serializable {
 	@OneToOne
 	@JoinColumn(name = "department_id")
 	private Department department;
+
+	public EmpDeptMapping(EmployeeDAO dao) {
+		this.empName = dao.getEmpName();
+	}
+
+	public Long getEmpId() {
+		return empId;
+	}
+
+	public void setEmpId(Long empId) {
+		this.empId = empId;
+	}
+
+	public String getEmpName() {
+		return empName;
+	}
+
+	public void setEmpName(String empName) {
+		this.empName = empName;
+	}
+
+	public Department getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
+
+
+	@Override
+	public String toString() {
+		return "EmpDeptMapping [empId=" + empId + ", empName=" + empName + ", department=" + department + "]";
+	}
 
 }
